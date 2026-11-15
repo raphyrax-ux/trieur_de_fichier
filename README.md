@@ -1,5 +1,5 @@
 # Projet 1 : Trieur de fichier
-Script qui prend un dossier1 contenant une multitude de fichiers et renvoie un dossier2 contenant tout les fichiers du dossier1 triés par catégorie 5image, Document, Code etc.)
+Script qui prend un dossier1 contenant une multitude de fichiers et renvoie un dossier2 contenant tout les fichiers du dossier1 triés par catégorie (image, Document, Code etc.)
 
 ## Utilisation
 - Run le fichier generer_dossier.py pour créer un dossier de test
