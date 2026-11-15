@@ -1,6 +1,8 @@
 # imports
 from pathlib import Path # pathlib : chemin de fichiers
 import shutil # déplacement de fichiers
+import csv
+from datetime import datetime
 
 p_tri = Path.home() / "OneDrive"/ "Documentos" / "Projet1_Trieur_de_fichier" / "dossier-tri" # chemin dossier tri
 p_test = Path.home() / "OneDrive"/ "Documentos" / "Projet1_Trieur_de_fichier" / "dossier-test" # chemin dossier test
@@ -10,22 +12,41 @@ categories = {"Images" : [".jpg", ".png", ".gif" ], "Documents" : [".pdf", ".doc
 def tri():
     nettoyage()
     creation_sous_dossier()
-    with open("rapport.txt", "w", encoding="utf-8") as rapport: # création du fichier de rapport
+    with open("rapport.csv", "w", newline="", encoding="utf-8-sig") as fichier_rapport: # création du fichier de rapport
+        rapport = csv.writer(fichier_rapport, delimiter=";")
+        rapport.writerow(["nom", "type", "taille (octets)", "date", "nouveau chemin"])
         for f in fichiers:
+            if not p_test.is_dir():
+                        rapport.write("Le dossier test n'existe pas")
+                        break
             for cat in categories:
                 if f.suffix.lower() in categories[cat]:
                     source = p_test / f.name # Là ou est le fichier initialement (donc dans dossier_test)
                     destination = p_tri / cat / f.name # là ou sera le fichier à la fin (donc dans dossier-tri) 
                     destination = doublons(f, cat, False, destination)
                     shutil.move(source, destination) # déplacement de fichier
-                    rapport.write(f"{f.name} => {cat} \n")
+                    infos = destination.stat()
+                    rapport.writerow([ # rédaction du fichier
+                         destination.name,
+                         cat,
+                         infos.st_size,
+                         datetime.fromtimestamp(infos.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                         destination,
+                    ])
                     break
             else:
                 source = p_test / f.name
                 destination = p_tri / "Autres" / f.name
                 destination = doublons(f, cat, True, destination)
                 shutil.move(source, destination)
-                rapport.write(f"{f.name} => Autres \n")
+                infos = destination.stat()
+                rapport.writerow([ # rédaction du fichier
+                                         destination.name,
+                                         cat,
+                                         infos.st_size,
+                                         datetime.fromtimestamp(infos.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                                         destination,
+                                    ])
 
 # créer les sous dossiers Images, Archives ...
 def creation_sous_dossier():
