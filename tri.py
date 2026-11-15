@@ -4,8 +4,8 @@ import shutil # déplacement de fichiers
 import csv
 from datetime import datetime
 
-p_tri = Path.home() / "OneDrive"/ "Documentos" / "Projet1_Trieur_de_fichier" / "dossier-tri" # chemin dossier tri
-p_test = Path.home() / "OneDrive"/ "Documentos" / "Projet1_Trieur_de_fichier" / "dossier-test" # chemin dossier test
+p_tri = Path(input("Dossier de destination : ")) # chemin dossier tri
+p_test = Path(input("Dossier à trier : ")) # chemin dossier test
 fichiers = [f for f in p_test.iterdir() if f.is_file()] # récupération des fichiers du dossier test grâce à la méthode iterdir()
 categories = {"Images" : [".jpg", ".png", ".gif" ], "Documents" : [".pdf", ".docx", ".txt"], "Audio": [".mp3", ".wav"], "Vidéos" : [".mp4"], "Archives" : [".zip"], "Code" : [".py"], "Autres" : []}
 
