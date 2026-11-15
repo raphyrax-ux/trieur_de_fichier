@@ -15,13 +15,15 @@ def tri():
             for cat in categories:
                 if f.suffix.lower() in categories[cat]:
                     source = p_test / f.name # Là ou est le fichier initialement (donc dans dossier_test)
-                    destination = p_tri / cat # là ou sera le fichier à la fin (donc dans dossier-tri)
+                    destination = p_tri / cat / f.name # là ou sera le fichier à la fin (donc dans dossier-tri) 
+                    destination = doublons(f, cat, False, destination)
                     shutil.move(source, destination) # déplacement de fichier
                     rapport.write(f"{f.name} => {cat} \n")
                     break
             else:
                 source = p_test / f.name
-                destination = p_tri / "Autres"
+                destination = p_tri / "Autres" / f.name
+                destination = doublons(f, cat, True, destination)
                 shutil.move(source, destination)
                 rapport.write(f"{f.name} => Autres \n")
 
@@ -36,5 +38,14 @@ def nettoyage():
     for f in p_tri.rglob("*"): # rglob : prend en compte ce qui a à l'intérieur des sous dossiers
         if f.is_file():
             f.unlink() # supprimer les fichiers
+def doublons(f, cat, isAutre, destination):
+    i = 1
+    while destination.exists():  # Gérer les doublons :  SI fichier (1).txt existe alors on rename fichier en fichier (2).txt
+        if isAutre:
+            destination = p_tri / "Autres" / (f.stem + f" ({i})" + f.suffix)
+        else:
+            destination = p_tri / cat / (f.stem + f" ({i})" + f.suffix)
+        i += 1
+    return destination
 
 tri()
